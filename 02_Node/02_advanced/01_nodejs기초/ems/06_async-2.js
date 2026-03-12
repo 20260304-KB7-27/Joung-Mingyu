@@ -1,0 +1,10 @@
+function orderPizza(order) {
+  return new Promise((resolve, reject) => {
+    if (order) resolve('피자를 주문했습니다.');
+    else reject('피자를 주문하지 않습니다.');
+  });
+}
+
+orderPizza(true)
+  .then((result) => console.log(result))
+  .catch((err) => console.error(err));
