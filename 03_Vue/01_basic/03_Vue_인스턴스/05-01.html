@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 3 연습용 Composition</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      금액: <input type="text" v-model.number="amount" /> <br />
+      <button v-on:click="balance += parseInt(amount)">입금</button>
+      <button v-on:click="balance -= parseInt(amount)">인출</button>
+      <br />
+      <h3>계좌 잔고: [{{balance}}]</h3>
+    </div>
+
+    <script>
+      const { createApp, ref } = Vue;
+
+      createApp({
+        setup() {
+          const amount = ref(0);
+          const balance = ref(0);
+
+          return { amount, balance };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>

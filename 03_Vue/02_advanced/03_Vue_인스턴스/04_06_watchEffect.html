@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 3 연습용 Composition</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <input v-model.lazy="name" placeholder="이름을 입력하세요" /> <br />
+      <input v-model.lazy="user.age" placeholder="나이를 입력하세요" /> <br />
+      <input
+        v-model.lazy="user.email"
+        placeholder="이메일을 입력하세요"
+      /><br />
+    </div>
+
+    <script>
+      const { createApp, ref, watchEffect } = Vue;
+
+      createApp({
+        setup() {
+          const name = ref('');
+          const user = ref({
+            age: 0,
+            email: '',
+          });
+
+          watchEffect(() => {
+            // 콜백 함수에서 사용된 반응형 데이터를 자동으로 추적
+            // 변경될 경우 콜백함수 실행
+            // 이전 값은 확인할 수 없음.
+            console.log(`이름이 ${name.value}로 변경됨.`);
+          });
+
+          return { user, name };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>

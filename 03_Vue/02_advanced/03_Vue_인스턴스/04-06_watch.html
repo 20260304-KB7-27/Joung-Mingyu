@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 3 연습용 Composition</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <input v-model.lazy="name" placeholder="이름을 입력하세요" /> <br />
+      <input v-model.lazy="user.age" placeholder="나이를 입력하세요" /> <br />
+      <input
+        v-model.lazy="user.email"
+        placeholder="이메일을 입력하세요"
+      /><br />
+    </div>
+
+    <script>
+      const { createApp, ref, watch } = Vue;
+
+      createApp({
+        setup() {
+          const name = ref('');
+          const user = ref({
+            age: 0,
+            email: '',
+          });
+
+          // watch
+          // 반응형 데이터가 변경될 때 실행
+          // 데이터 변경에 따른 부가적인 작업을 할 때 사용 (알림, 로깅, ...)
+          watch(name, (newVal, oldVal) => {
+            console.log(`이름이 "${oldVal}"에서 "${newVal}"로 변경됨`);
+          });
+
+          // // 객체별 deep을 사용해서 감시할 경우 newVal, oldVal가 동일한 Proxy 객체를 참조함
+          // watch(
+          //   user,
+          //   (newVal, oldVal) => {
+          //     console.log(
+          //       `기존 사용자: ${oldVal.age}, ${oldVal.email} -> 변경된 사용자: ${nevVal.age}, ${nevVal.email}`,
+          //     );
+          //   },
+          //   {
+          //     deep: true, // 객체 내부 속성까지 감시
+          //   },
+          // );
+
+          watch(
+            () => ({ ...user }), // 객체를 복사해서
+            (newVal, oldVal) => {
+              console.log(
+                `기존 사용자: ${(oldVal.age, oldVal.email)} -> 변경된 사용자: ${(newVal.age, newVal.email)}`,
+              );
+            },
+          );
+
+          return { user, name };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>
