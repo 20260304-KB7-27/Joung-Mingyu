@@ -1,0 +1,12 @@
+<template>
+  <li><input type="checkbox" :checked="checked" /> {{ name }}</li>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+// defineProps: 부모 요소에서 전달받은 Props를 정의하는 함수
+defineProps(['name', 'checked']);
+</script>
+
+<style lang="scss" scoped></style>
