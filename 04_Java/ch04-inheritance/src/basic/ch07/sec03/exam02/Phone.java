@@ -19,4 +19,12 @@ public class Phone {
     public void printModel() {
         System.out.println("부모 Phone에서 호출됨 model = " + model);
     }
+
+    @Override
+    public String toString() {
+        return "Phone{" +
+                "model='" + model + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }
