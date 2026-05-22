@@ -9,5 +9,5 @@ select user.user, user.host from user;
 -- employees 데이터베이스에 대한 모든 권한 부여
 grant all privileges on employees.* to 'bear'@'%';
 
--- user의 모든 권한 조회
+-- 'bear'@'%'가 가진 모든 권한 조회
 show grants for 'bear'@'%';
