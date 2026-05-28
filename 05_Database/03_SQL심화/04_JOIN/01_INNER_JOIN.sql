@@ -17,7 +17,7 @@ from employees limit 5;
 select emp_no, dept_no, from_date, to_date
 from dept_emp limit 5;
 
--- 직원 정보, 부서 정보
+-- 직원 정보, 부서 ID
 select
     e.emp_no,
     e.first_name,
