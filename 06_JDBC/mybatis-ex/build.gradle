@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.scoula'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // MySQL Driver
+    implementation 'com.mysql:mysql-connector-j:9.7.0'
+
+    // MyBatis
+    implementation 'org.mybatis:mybatis:3.5.19'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.46'
+    annotationProcessor 'org.projectlombok:lombok:1.18.46'
+    testCompileOnly 'org.projectlombok:lombok:1.18.46'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.46'
+
+    // JUnit
+    testImplementation platform('org.junit:junit-bom:6.1.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
