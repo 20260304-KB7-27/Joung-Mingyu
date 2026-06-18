@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 반드시 경로 + 인터페이스 패키지명과 일치해야 함 -->
+<mapper namespace="org.scoula.board.mapper.BoardMapper">
+    <insert id="create" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="no">
+        insert into tbl_board_ex(title, content, writer)
+        values (#{title}, #{content}, #{writer})
+
+        <!-- Select Key: auto_increment로 자동 생성된 PK값을 받을 수 있는 기능 -->
+<!--        <selectKey resultType="Long" keyProperty="no" keyColumn="no" order="AFTER">-->
+<!--            select last_insert_id()-->
+<!--        </selectKey>-->
+    </insert>
+
+    <update id="update">
+        update tbl_board_ex
+        set
+            title = #{title},
+            content = #{content},
+            writer = #{writer},
+            update_date = now()
+        where no = #{no}
+    </update>
+
+    <select id="get" parameterType="long" resultType="BoardVO">
+        select * from tbl_board_ex
+        where no = #{no}
+    </select>
+</mapper>
+
+        <!--<mapper namespace="연결하고 싶은 인터페이스 경로 + 이름">-->
+        <!--    <select id="추상메서드명" resultType="반환타입">-->
+        <!--        SQL-->
+        <!--    </select>-->
+        <!--</mapper>-->
