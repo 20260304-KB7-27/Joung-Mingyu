@@ -1,11 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1> 템플릿 입니다! </h1>
-</body>
-</html>
+<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="./layouts/header.jsp" %>
+<h1>환영합니다</h1>
+<div>
+    첫 페이지 입니다!!
+</div>
+<%@ include file="./layouts/footer.jsp" %>

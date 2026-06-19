@@ -5,15 +5,25 @@
 
 <!-- namespace는 반드시 경로 + 인터페이스 패키지명과 일치해야 함 -->
 <mapper namespace="org.scoula.board.mapper.BoardMapper">
-    <insert id="create" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="no">
+<!--    <insert id="create" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="no">-->
+    <insert id="create">
         insert into tbl_board_ex(title, content, writer)
         values (#{title}, #{content}, #{writer})
 
         <!-- Select Key: auto_increment로 자동 생성된 PK값을 받을 수 있는 기능 -->
-<!--        <selectKey resultType="Long" keyProperty="no" keyColumn="no" order="AFTER">-->
-<!--            select last_insert_id()-->
-<!--        </selectKey>-->
+        <selectKey resultType="Long" keyProperty="no" keyColumn="no" order="AFTER">
+            select last_insert_id()
+        </selectKey>
     </insert>
+
+    <select id="getList" resultType="BoardVO">
+        select * from tbl_board_ex order by no desc
+    </select>
+
+    <select id="get" parameterType="long" resultType="BoardVO">
+        select * from tbl_board_ex
+        where no = #{no}
+    </select>
 
     <update id="update">
         update tbl_board_ex
@@ -25,10 +35,9 @@
         where no = #{no}
     </update>
 
-    <select id="get" parameterType="long" resultType="BoardVO">
-        select * from tbl_board_ex
-        where no = #{no}
-    </select>
+    <delete id="delete">
+        delete from tbl_board_ex where no = #{no}
+    </delete>
 </mapper>
 
         <!--<mapper namespace="연결하고 싶은 인터페이스 경로 + 이름">-->

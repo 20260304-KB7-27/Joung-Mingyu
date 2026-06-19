@@ -19,7 +19,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardDTO> getList() {
-        return List.of();
+        return boardMapper.getList().stream()
+                .map(BoardDTO::of)
+                .toList();
     }
 
     @Override
@@ -39,6 +41,7 @@ public class BoardServiceImpl implements BoardService {
         // BoardDTO -> BoardVO로 변환
         BoardVO boardVo = board.toVo();
         boardMapper.create(boardVo);
+        board.setNo(boardVo.getNo());
     }
 
     @Override
@@ -49,7 +52,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public boolean delete(BoardDTO board) {
-        return false;
+    public boolean delete(Long no) {
+        int result = boardMapper.delete(no);
+        return result == 1;
     }
 }

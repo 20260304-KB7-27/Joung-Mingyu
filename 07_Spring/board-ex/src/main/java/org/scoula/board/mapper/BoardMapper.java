@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BoardMapper {
     // 게시글 전체 조회
-    // public List<BoardVO> getList();
+    List<BoardVO> getList();
 
     // 게시글 단건 조회
     BoardVO get(Long no);
@@ -18,5 +18,5 @@ public interface BoardMapper {
     int update(BoardVO board);
 
     // 게시글 삭제
-    // public boolean delete(long no);
+    int delete(long no);
 }
