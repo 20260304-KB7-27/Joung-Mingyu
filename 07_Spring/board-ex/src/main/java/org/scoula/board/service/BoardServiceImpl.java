@@ -2,11 +2,16 @@ package org.scoula.board.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.board.domain.BoardAttachmentVO;
 import org.scoula.board.domain.BoardVO;
 import org.scoula.board.dto.BoardDTO;
 import org.scoula.board.mapper.BoardMapper;
+import org.scoula.utils.UploadFiles;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -15,6 +20,7 @@ import java.util.Optional;
 @Log4j2
 @RequiredArgsConstructor // final, @NotNull이 붙은 필드만 포함하는 생성자 생성
 public class BoardServiceImpl implements BoardService {
+    private static final String BASE_DIR = "/Users/fuyuu/test_upload/board";
     private final BoardMapper boardMapper;
 
     @Override
@@ -34,14 +40,45 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new NoSuchElementException());
     }
 
+    @Transactional // 2가지의 insert문 중 하나라도 예외가 발생하면 rollback
     @Override
     public void create(BoardDTO board) {
         // UserDetail 정보를 가져와서 Board에 같이 외래키로 작성해줌
 
         // BoardDTO -> BoardVO로 변환
         BoardVO boardVo = board.toVo();
-        boardMapper.create(boardVo);
+        boardMapper.create(boardVo); // 게시글 생성
+
+        // 만약 첨부파일들이 있으면 저장
+        List<MultipartFile> files = board.getFiles();
+
+        if (files != null && !files.isEmpty()) {
+            // 첨부파일이 있을 경우
+            upload(boardVo.getNo(), files);
+        }
+
         board.setNo(boardVo.getNo());
+    }
+
+    // 파일 업로드
+    private void upload(Long bno, List<MultipartFile> files) {
+        for (MultipartFile part : files) {
+            if (part.isEmpty()) continue;
+
+            // 파일을 직접 저장 -> IOException
+            try {
+                // 1. 실제 파일을 서버에 저장
+                String uploadPath = UploadFiles.upload(BASE_DIR, part);
+
+                // 2. 데이터베이스에 저장
+                BoardAttachmentVO attach = BoardAttachmentVO.of(part, bno, uploadPath);
+                boardMapper.createAttachment(attach);
+            } catch (IOException e) {
+                throw new RuntimeException();
+                // -> @Transaction에서 감지할 수 있도록
+                // 예외가 발생하면 Rollback (Transaction)
+            }
+        }
     }
 
     @Override
@@ -55,5 +92,10 @@ public class BoardServiceImpl implements BoardService {
     public boolean delete(Long no) {
         int result = boardMapper.delete(no);
         return result == 1;
+    }
+
+    @Override
+    public BoardAttachmentVO getAttachment(Long no) {
+        return boardMapper.getAttachment(no);
     }
 }
