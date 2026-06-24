@@ -24,6 +24,11 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
+    // WebSocket
+    implementation "org.springframework:spring-websocket:${springVersion}"
+    implementation "org.springframework:spring-messaging:${springVersion}"
+    implementation "org.springframework.integration:spring-integration-stomp:5.5.20"
+
     // Spring
     implementation ("org.springframework:spring-context:${springVersion}")
             { exclude group: 'commons-logging', module: 'commons-logging' }
