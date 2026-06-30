@@ -15,3 +15,28 @@ Content-Type: application/json
   "username": "admin",
   "password": "12345"
 }
+### 토큰 만료 예외 처리 확인
+GET http://localhost:8080/member/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4Mjc5NjAyMiwiZXhwIjoxNzgyNzk2MzIyLCJrZXkiOiJ2YWx1ZSJ9.UDBHj8Tz6YEOX_hk7O0WBsrCBH39nH5cA9ChMYfCwCs
+
+### eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4Mjc5NzQ0OCwiZXhwIjoxNzgyNzk3NzQ4LCJrZXkiOiJ2YWx1ZSJ9.gG12z_NerSTvovqVE-9HCeGk5v-bvKO-pTswa7gZno8
+### JWT 시그니처 일부분 지운 뒤에 요청 -> JWT 시그니처가 일치하지 않아 예외 발생
+GET http://localhost:8080/member/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc4Mjc5NzQ0OCwiZXhwIjoxNzgyNzk3NzQ4LCJrZXkiOiJ2YWx1ZSJ9.gG12z_NerSTv
+
+### 토큰 없이 요청 보내기 -> CustomAuthenticationEntryPoint에서 처리
+GET http://localhost:8080/member/3
+
+### 권한 문제 테스트
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "password": "1234"
+}
+
+### eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMyIsImlhdCI6MTc4Mjc5ODM5MCwiZXhwIjoxNzgyNzk4NjkwLCJrZXkiOiJ2YWx1ZSJ9.FAPCtKeru_uHLAUliFAOqI7LMSxgfiI9SFb66mvLpSk
+### 일반 회원 토큰으로 admin 권한의 URL에 요청 보내기
+GET http://localhost:8080/security/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMyIsImlhdCI6MTc4Mjc5ODM5MCwiZXhwIjoxNzgyNzk4NjkwLCJrZXkiOiJ2YWx1ZSJ9.FAPCtKeru_uHLAUliFAOqI7LMSxgfiI9SFb66mvLpSk

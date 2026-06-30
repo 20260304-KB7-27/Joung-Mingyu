@@ -111,6 +111,11 @@ dependencies {
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    // Swagger 관련 의존성
+    implementation 'io.springfox:springfox-swagger2:2.9.2'   // Swagger 핵심 라이브러리
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2' // Swagger UI 웹 인터페이스
+
 }
 
 // 테스트 실행 설정

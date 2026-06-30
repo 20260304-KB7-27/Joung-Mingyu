@@ -3,7 +3,11 @@ package org.scoula.security.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.mybatis.spring.annotation.MapperScan;
+import org.scoula.security.filter.AuthenticationErrorFilter;
+import org.scoula.security.filter.JwtAuthenticationFilter;
 import org.scoula.security.filter.JwtUsernamePasswordAuthenticationFilter;
+import org.scoula.security.handler.CustomAccessDeniedHandler;
+import org.scoula.security.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -37,6 +41,10 @@ import java.util.Arrays;
 @ComponentScan(basePackages = {"org.scoula.security"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter; //JWT 인증 필터
+    private final AuthenticationErrorFilter authenticationErrorFilter; // JWT 예외 필터
+    private final CustomAuthenticationEntryPoint authEntryPoint; // 미인증 요청 처리
+    private final CustomAccessDeniedHandler customAccessDeniedHandler; // 미인가 처리
 
     @Autowired
     private JwtUsernamePasswordAuthenticationFilter jwtUsernamePasswordAuthenticationFilter;
@@ -56,9 +64,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // CSRF 필터 앞에 encodingFilter를 놓겠다
-        http.addFilterBefore(encodingFilter(), CsrfFilter.class)
+        http // JWT 예외 필터 -> JWT 인증 필터 -> 로그인 필터 -> UsernamePassword 필터
+                .addFilterBefore(encodingFilter(), CsrfFilter.class)
+                .addFilterBefore(authenticationErrorFilter,
+                        UsernamePasswordAuthenticationFilter.class) // JWT 예외 필터
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터
                 .addFilterBefore(jwtUsernamePasswordAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class); // 로그인 필터
+
+        // 예외 핸들러 등록
+        http.exceptionHandling()
+                .authenticationEntryPoint(authEntryPoint) // 인증이 안된 경우의 핸들러
+                .accessDeniedHandler(customAccessDeniedHandler); // 인가 문제 핸들러
 
         // CORS 설정 추가
         http.cors();
@@ -75,7 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/security/admin")
                 .access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/security/member")
-                .access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')");
+                .access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+                .anyRequest().authenticated(); // 인증된 사람들 (인증 객체가 있는 상태)
     }
 
     // 테스트 용으로 메모리 상에 사용자 정보 등록
@@ -99,7 +118,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/assets/**",
                         "/*", // 루트 경로 바로 아래 /login, /member
-                        "/api/member/**" // /api/member 하위 경로 제외
+                        "/api/member/**", // /api/member 하위 경로 제외
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/api-docs"
                 );
     }
 
