@@ -12,7 +12,8 @@ import org.springframework.web.servlet.config.annotation.*;
 @ComponentScan(basePackages = {
         "org.scoula.controller",
         "org.scoula.exception",
-        "org.scoula.board.controller"})
+        "org.scoula.board.controller",
+        "org.scoula.member.controller"})
 public class ServletConfig implements WebMvcConfigurer {
     // Vue 정적 파일로 핸들링할 설정
     @Override

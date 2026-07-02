@@ -1,6 +1,8 @@
 <script setup>
 import { reactive, computed } from "vue";
 import config from "@/config";
+import MenuGroup from "./menu/MenuGroup.vue";
+import AccountMenuGroup from "./menu/AccountMenuGroup.vue";
 
 let state = reactive({ isNavShow: false });
 
@@ -19,17 +21,13 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
         <i class="fa-solid fa-house"></i>
         Scoula
       </router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapsibleNavbar"
-        @click="toggleNavShow"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
+        @click="toggleNavShow">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div :class="navClass" id="collapsibleNavbar">
-        <!-- 추후 작업 예정 -->
+        <menu-group :menus="config.menus" />
+        <account-menu-group />
       </div>
     </div>
   </nav>

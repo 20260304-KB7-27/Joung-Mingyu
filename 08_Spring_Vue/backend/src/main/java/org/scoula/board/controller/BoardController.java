@@ -1,6 +1,5 @@
 package org.scoula.board.controller;
 
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.scoula.board.dto.BoardDTO;
 import org.scoula.board.service.BoardService;

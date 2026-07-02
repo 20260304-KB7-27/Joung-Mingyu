@@ -1,0 +1,45 @@
+package org.scoula.member.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.scoula.security.account.domain.AuthVO;
+import org.scoula.security.account.domain.MemberVO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+
+@Data @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class MemberDTO {
+    private String username;
+    private String email;
+    private Date regDate;
+    private Date updateDate;
+
+    private MultipartFile avatar; // -> DB 저장 안하고 파일 시스템으로 관리
+
+    private List<String> authList;
+
+    public static MemberDTO of(MemberVO m) {
+        return MemberDTO.builder()
+                .username(m.getUsername())
+                .email(m.getEmail())
+                .regDate(m.getRegDate())
+                .updateDate(m.getUpdateDate())
+                .authList(m.getAuthList().stream().map(a -> a.getAuth()).toList())
+                .build();
+    }
+
+    public MemberVO toVO() {
+        return MemberVO.builder()
+                .username(username)
+                .email(email)
+                .regDate(regDate)
+                .updateDate(updateDate)
+                .build();
+    }
+}
