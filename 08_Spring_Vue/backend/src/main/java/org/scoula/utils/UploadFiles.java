@@ -1,5 +1,6 @@
 package org.scoula.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -9,11 +10,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 
 import static org.scoula.utils.UploadFileName.getUniqueName;
 
+@Slf4j
 public class UploadFiles {
     public static String upload(String baseDir, MultipartFile part) throws IOException {
         // 기본 디렉토리 확인, 없으면 생성
@@ -56,6 +59,25 @@ public class UploadFiles {
         try (OutputStream os = response.getOutputStream();
              BufferedOutputStream bos = new BufferedOutputStream(os)) {
             Files.copy(Paths.get(file.getPath()), bos);
+        }
+    }
+
+    // 아바타 이미지 전송용
+    public static void downloadImage(HttpServletResponse response, File file) {
+        try {
+            Path path = Path.of(file.getPath());
+            String mimeType = Files.probeContentType(path); // 파일 확장자로 mimetype 추정
+            log.info("🍟 mimeType: {}", mimeType);
+            // 응답 Content_Type을 파일타입으로 지정하면 브라우저가 이미지를 바로 렌더링
+            response.setContentType(mimeType);
+            response.setContentLength((int) file.length()); // 응답 바디 크기 지정
+
+            try (OutputStream os = response.getOutputStream();
+                 BufferedOutputStream bos = new BufferedOutputStream(os)) {
+                Files.copy(path, bos); // 서버 파일을 응답 스트림으로 복사(전송)
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
