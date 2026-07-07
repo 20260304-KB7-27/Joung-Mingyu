@@ -1,8 +1,10 @@
 package org.scoula.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.scoula.member.dto.ChangePasswordDTO;
 import org.scoula.member.dto.MemberDTO;
 import org.scoula.member.dto.MemberJoinDTO;
+import org.scoula.member.dto.MemberUpdateDTO;
 import org.scoula.member.service.MemberService;
 import org.scoula.utils.UploadFiles;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +44,18 @@ public class MemberController {
         }
 
         UploadFiles.downloadImage(response, file);
+    }
+
+    // 회원정보 수정
+    @PutMapping("/{username}")
+    public ResponseEntity<MemberDTO> changeProfile(MemberUpdateDTO member) {
+        return ResponseEntity.ok(service.update(member));
+    }
+
+    // 비밀번호 수정
+    @PutMapping("/{username}/changepassword")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        service.changePassword(changePasswordDTO);
+        return ResponseEntity.ok().build();
     }
 }

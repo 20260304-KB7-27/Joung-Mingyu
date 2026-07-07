@@ -2,7 +2,9 @@ import config from '@/config';
 import auth from '@/router/auth';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
+// useRouter: Vue 컴포넌트 전용
+import router from '@/router';
 
 const instance = axios.create({
   timeout: 1000, // 요청 타임아웃
@@ -27,7 +29,6 @@ instance.interceptors.response.use(
     if (error.response?.status === 401) {
       console.log('인증 실패 (401) - 토큰이 유효하지 않음');
       const { logout } = useAuthStore();
-      const router = useRouter();
       logout(); // 기존 토큰 지워버리기
 
       router.push('/auth/login'); // 로그인 페이지로 이동

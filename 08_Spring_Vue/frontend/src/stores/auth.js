@@ -50,6 +50,12 @@ export const useAuthStore = defineStore('auth', () => {
   // 토큰 가져오기
   const getToken = () => state.value.token;
 
+  // 프로필 변경
+  const changeProfile = (member) => {
+    state.value.user.email = member.email;
+    localStorage.setItem('auth', JSON.stringify(state.value));
+  };
+
   // 스토어 초기화 시 상태 복원
   load();
 
@@ -61,5 +67,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     getToken,
+    changeProfile,
   };
 });

@@ -48,6 +48,26 @@
         where no = #{no}
     </select>
 
+    <select id="getAttachmentList" resultType="org.scoula.board.domain.BoardAttachmentVO">
+        select *
+        from tbl_board_attachment_ex
+        where bno = #{bno}
+        order by filename
+    </select>
+
+    <!-- 페이징 처리한 만큼 목록 조회 -->
+    <select id="getPage" resultType="org.scoula.board.domain.BoardVO">
+        select *
+        from tbl_board_ex
+        order by no desc
+        limit #{offset}, #{amount}
+    </select>
+
+    <!-- 게시글 총 개수 조회-->
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(*) from tbl_board_ex
+    </select>
+
     <!--
     ResultMap
     - DB 쿼리 결과의 컬럼과 자바 객체의 필드와 매핑
@@ -93,6 +113,12 @@
 
     <delete id="delete">
         delete from tbl_board_ex where no = #{no}
+    </delete>
+
+    <delete id="deleteAttachment">
+        delete
+        from tbl_board_attachment_ex
+        where no = #{no}
     </delete>
 </mapper>
 

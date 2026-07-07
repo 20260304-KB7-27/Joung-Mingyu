@@ -31,6 +31,24 @@
         values(#{username}, #{auth})
     </insert>
 
+    <!-- 회원 정보 업데이트 -->
+    <update id="update">
+        UPDATE tbl_member
+        SET
+        email = #{email},
+        update_date = now()
+        WHERE username =#{username}
+    </update>
+
+    <!-- 패스워드 업데이트 -->
+    <update id="updatePassword">
+        UPDATE tbl_member
+        SET
+        password = #{newPassword},
+        update_date = now()
+        WHERE username =#{username}
+    </update>
+
     <!-- username 중복 조회 용도 -->
     <select id="findByUsername" resultType="org.scoula.security.account.domain.MemberVO">
         select * from tbl_member where username = #{username}
